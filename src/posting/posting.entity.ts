@@ -12,3 +12,9 @@ export class PostingLogData {
   content: string;
   timestamp: number;
 }
+
+export class PostingPayloadData {
+  user: string;
+  tag: string;
+  search: string;
+}
