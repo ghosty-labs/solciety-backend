@@ -11,7 +11,7 @@ import { GlobalModule } from 'global.module';
   imports: [
     GlobalModule,
     MongooseModule.forRoot(
-      'mongodb://localhost:27017/?readPreference=primary&directConnection=true&ssl=false',
+      'mongodb+srv://wahdanaedo:yw3MMTWHSdxLxoAX@cluster0.srr7czq.mongodb.net/',
     ),
     PostWorkerModule,
     PostingModule,
