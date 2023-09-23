@@ -67,18 +67,16 @@ export class PostingService {
 
   async createPosting(posting: PostingLogData) {
     const post = await this.getPostingBySignature(posting.signature);
-    if (post) {
-      throw new Error(`error.posting: signature alrady exist`);
+    if (!post) {
+      const createPost = new this.postModel<PostDB>({
+        signature: posting.signature,
+        key: posting.key,
+        user: posting.user,
+        tag: posting.tag,
+        content: posting.content,
+        created_at: posting.timestamp,
+      });
+      await createPost.save();
     }
-
-    const createPost = new this.postModel<PostDB>({
-      signature: posting.signature,
-      key: posting.key,
-      user: posting.user,
-      tag: posting.tag,
-      content: posting.content,
-      created_at: posting.timestamp,
-    });
-    await createPost.save();
   }
 }
