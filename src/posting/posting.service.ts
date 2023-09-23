@@ -68,8 +68,7 @@ export class PostingService {
   async createPosting(posting: PostingLogData) {
     const post = await this.getPostingBySignature(posting.signature);
     if (post) {
-      console.error(`error.posting: signature alrady exist`);
-      return;
+      throw new Error(`error.posting: signature alrady exist`);
     }
 
     const createPost = new this.postModel<PostDB>({
