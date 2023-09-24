@@ -38,8 +38,19 @@ export class PostingService {
     }
 
     aggregations.push({
-      $sort: { _id: -1 },
+      $lookup: {
+        from: 'comments',
+        as: 'comments',
+        localField: 'key',
+        foreignField: 'post',
+      },
     });
+    aggregations.push({
+      $addFields: { total_comment: { $size: '$comments' } },
+    });
+    aggregations.push({ $unset: 'comments' });
+
+    aggregations.push({ $sort: { created_at: -1 } });
 
     const aggregationMatches = [...aggregations];
 
@@ -55,7 +66,7 @@ export class PostingService {
 
     return {
       results: posting,
-      total: total[0].count || 0,
+      total: total[0]?.count || 0,
       skip,
       limit,
     };

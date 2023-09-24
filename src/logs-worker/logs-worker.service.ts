@@ -2,14 +2,17 @@ import { InjectQueue } from '@nestjs/bull';
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { Connection, PublicKey } from '@solana/web3.js';
 import { Queue } from 'bull';
-import { CommentLogPrefix } from 'src/comment/comment.entity';
+import { CommentLogData, CommentLogPrefix } from 'src/comment/comment.entity';
 import { PostingLogData, PostingLogPrefix } from 'src/posting/posting.entity';
 
 @Injectable()
-export class PostWorkerService implements OnModuleInit {
+export class LogsWorkerService implements OnModuleInit {
   constructor(
     @InjectQueue('POST_LOGS_INDEXER_WORKER')
     private postLogsQueue: Queue,
+
+    @InjectQueue('COMMENT_LOGS_INDEXER_WORKER')
+    private commentLogsQueue: Queue,
   ) {}
 
   async onModuleInit() {
@@ -40,16 +43,15 @@ export class PostWorkerService implements OnModuleInit {
 
           const keyPrefix = key.split('_')[1];
 
+          const stringValue = value.slice(3, -1).replace(/\\n/g, '');
+          const objectValue = JSON.parse(stringValue);
+
           switch (keyPrefix) {
             case PostingLogPrefix.SendPost:
-              const stringValue = value.slice(3, -1).replace(/\\n/g, '');
-              const objectValue = JSON.parse(stringValue);
               const postingData: PostingLogData = JSON.parse(objectValue);
               postingData['signature'] = result.signature;
 
-              console.log('INI DI SWITCH CASE');
               await this.postLogsQueue.add(postingData);
-              console.log('SETELAH ADD Q');
               break;
 
             case PostingLogPrefix.UpdatePost:
@@ -61,7 +63,10 @@ export class PostWorkerService implements OnModuleInit {
               break;
 
             case CommentLogPrefix.SendComment:
-              //TODO handle
+              const commentData: CommentLogData = JSON.parse(objectValue);
+              commentData['signature'] = result.signature;
+
+              await this.commentLogsQueue.add(commentData);
               break;
 
             case CommentLogPrefix.UpdateComment:
@@ -78,7 +83,7 @@ export class PostWorkerService implements OnModuleInit {
         },
       );
       console.log('Starting web socket, subscription ID: ', subscriptionId);
-      await sleep(5000); //Wait 5 seconds for Socket Testing
+      await sleep(2000); //Wait 2 seconds for Socket Testing
     })();
   }
 }
