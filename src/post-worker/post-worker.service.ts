@@ -1,12 +1,16 @@
+import { InjectQueue } from '@nestjs/bull';
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { Connection, PublicKey } from '@solana/web3.js';
+import { Queue } from 'bull';
 import { CommentLogPrefix } from 'src/comment/comment.entity';
 import { PostingLogData, PostingLogPrefix } from 'src/posting/posting.entity';
-import { PostingService } from 'src/posting/posting.service';
 
 @Injectable()
 export class PostWorkerService implements OnModuleInit {
-  constructor(private readonly postingService: PostingService) {}
+  constructor(
+    @InjectQueue('POST_LOGS_INDEXER_WORKER')
+    private postLogsQueue: Queue,
+  ) {}
 
   async onModuleInit() {
     const WSS_ENDPOINT =
@@ -43,7 +47,9 @@ export class PostWorkerService implements OnModuleInit {
               const postingData: PostingLogData = JSON.parse(objectValue);
               postingData['signature'] = result.signature;
 
-              await this.postingService.createPosting(postingData);
+              console.log('INI DI SWITCH CASE');
+              await this.postLogsQueue.add(postingData);
+              console.log('SETELAH ADD Q');
               break;
 
             case PostingLogPrefix.UpdatePost:
