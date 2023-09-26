@@ -3,6 +3,7 @@ import { Global, Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { CommentDB, CommentSchema } from 'schemas/comment.schema';
 import { PostDB, PostSchema } from 'schemas/post.schema';
+import { ProfileDB, ProfileSchema } from 'schemas/profile.schema';
 
 @Global()
 @Module({
@@ -15,6 +16,10 @@ import { PostDB, PostSchema } from 'schemas/post.schema';
       {
         name: CommentDB.name,
         schema: CommentSchema,
+      },
+      {
+        name: ProfileDB.name,
+        schema: ProfileSchema,
       },
     ]),
     BullModule.registerQueue({ name: 'POST_LOGS_INDEXER_WORKER' }),
