@@ -1,5 +1,5 @@
 export class ProfilePayload {
-  public_key: string;
+  publicKey: string;
   image: string;
   alias: string;
   bio: string;
@@ -8,6 +8,10 @@ export class ProfilePayload {
 export class PutProfilePayload {
   alias: string;
   bio: string;
+}
+
+export interface RequestWithPublicKey extends Request {
+  publicKey: string;
 }
 
 export enum HairVariant {

@@ -12,3 +12,7 @@ export class PutProfileBodyDto {
   alias: string;
   bio: string;
 }
+
+export class GetProfileQueryDto {
+  public_key: string;
+}

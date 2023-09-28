@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { ProfileDB, ProfileDocument } from 'schemas/profile.schema';
@@ -12,13 +12,22 @@ export class ProfileService {
     private profileModel: Model<ProfileDocument>,
   ) {}
 
+  async getProfile(publicKey: string) {
+    return await this.profileModel.findOne({ public_key: publicKey });
+  }
+
   async updateOrCreateProfile(
     publicKey: string,
     putProfilePayload: PutProfilePayload,
   ) {
+    const aliasExist = await this.getProfileByAlias(putProfilePayload.alias);
+    if (aliasExist) {
+      throw new BadRequestException(`alias already exist`);
+    }
+
     const profilePayload: ProfilePayload = Object.assign(
       {
-        public_key: publicKey,
+        publicKey: publicKey,
         image: generateProfileImage(publicKey),
       },
       putProfilePayload,
@@ -36,5 +45,14 @@ export class ProfileService {
       { public_key: { $ne: publicKey } },
       { $set: { has_new_post: true } },
     );
+  }
+
+  private async getProfileByAlias(alias: string) {
+    return await this.profileModel.findOne({ alias });
+  }
+
+  private validateAlias(alias: string) {
+    const suffix = alias.slice(-3);
+    // TODO check suffix .sol
   }
 }
