@@ -3,12 +3,15 @@ import { PostingLogData, PostingPayloadData } from './posting.entity';
 import { InjectModel } from '@nestjs/mongoose';
 import { PostDB, PostDocument } from 'schemas/post.schema';
 import { Model } from 'mongoose';
+import { ProfileDB, ProfileDocument } from 'schemas/profile.schema';
 
 @Injectable()
 export class PostingService {
   constructor(
     @InjectModel(PostDB.name)
     private postModel: Model<PostDocument>,
+    @InjectModel(ProfileDB.name)
+    private profileModel: Model<ProfileDocument>,
   ) {}
 
   async findPosting(query: PostingPayloadData, skip: number, limit: number) {
@@ -74,6 +77,12 @@ export class PostingService {
 
   async getPostingBySignature(signature: string) {
     return await this.postModel.findOne({ signature });
+  }
+
+  async getNewPostingStatus(publicKey: string) {
+    return await this.profileModel
+      .findOne({ public_key: publicKey })
+      .select({ _id: 0, has_new_post: 1 });
   }
 
   async createPosting(posting: PostingLogData) {

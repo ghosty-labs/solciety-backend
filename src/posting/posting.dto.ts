@@ -1,4 +1,5 @@
 import { ObjectId } from 'mongoose';
+import { ProfileDto } from 'src/profile/profile.dto';
 
 export class PostingDto {
   _id: ObjectId;
@@ -18,4 +19,9 @@ export class GetPostingQueryDto {
   __limit: string;
 }
 
+export class GetNewPostStatusQueryDto {
+  public_key: string;
+}
+
 export class GetPostingResponseDto extends PostingDto {}
+export class GetNewPostStatusResponseDto extends ProfileDto {}

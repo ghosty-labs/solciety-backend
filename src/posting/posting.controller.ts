@@ -1,6 +1,6 @@
 import { Controller, Get, Query } from '@nestjs/common';
 import { PostingService } from './posting.service';
-import { GetPostingQueryDto } from './posting.dto';
+import { GetNewPostStatusQueryDto, GetPostingQueryDto } from './posting.dto';
 
 @Controller('posting')
 export class PostingController {
@@ -22,5 +22,11 @@ export class PostingController {
     const posting = await this.postingService.findPosting(payload, skip, limit);
 
     return posting;
+  }
+
+  @Get('/new-post-status')
+  async getNewPostStatus(@Query() query: GetNewPostStatusQueryDto) {
+    const publicKey = query.public_key;
+    return await this.postingService.getNewPostingStatus(publicKey);
   }
 }

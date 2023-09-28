@@ -16,6 +16,9 @@ export class ProfileDB {
   image: string;
   @Prop({ default: null })
   alias?: string;
+  @Prop({ default: false })
+  has_new_post: boolean;
+  @Prop()
   @Prop()
   created_at?: number;
   @Prop()

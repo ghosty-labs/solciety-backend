@@ -4,16 +4,16 @@ import {
   Put,
   UnauthorizedException,
 } from '@nestjs/common';
-import base58 from 'bs58';
-import nacl from 'tweetnacl';
-import { AuthService } from './auth.service';
-
+import { ProfileService } from './profile.service';
+import base58 = require('bs58');
+import nacl = require('tweetnacl');
 @Controller('auth')
-export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+export class ProfileController {
+  constructor(private readonly profileService: ProfileService) {}
 
   @Put('/signin')
-  async signin(@Headers() authorization: string) {
+  async signin(@Headers() headers: any) {
+    const authorization = headers.authorization;
     const decodedAuthHeader = Buffer.from(authorization, 'base64').toString();
     const authHeaderParts = decodedAuthHeader.split('&');
 
@@ -34,7 +34,7 @@ export class AuthController {
 
     if (!isSigned) throw new UnauthorizedException(`error: signin failed`);
 
-    const profile = await this.authService.updateOrCreateProfile(pubKey);
+    const profile = await this.profileService.updateOrCreateProfile(pubKey);
     return profile;
   }
 }

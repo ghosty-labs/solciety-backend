@@ -2,10 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { ProfileDB, ProfileDocument } from 'schemas/profile.schema';
-import { HairVariant } from './auth.entity';
+import { HairVariant } from './profile.entity';
 
 @Injectable()
-export class AuthService {
+export class ProfileService {
   constructor(
     @InjectModel(ProfileDB.name)
     private profileModel: Model<ProfileDocument>,
@@ -26,7 +26,14 @@ export class AuthService {
           image: `https://api.dicebear.com/7.x/lorelei/svg?seed=${publicKey}&backgroundColor=3f3f46&scale=150&hair=${randomHairVariant}`,
         },
       },
-      { upsert: true },
+      { upsert: true, returnDocument: 'after' },
+    );
+  }
+
+  async updateHasNewPost(publicKey: string) {
+    return await this.profileModel.updateMany(
+      { public_key: { $ne: publicKey } },
+      { $set: { has_new_post: true } },
     );
   }
 }
