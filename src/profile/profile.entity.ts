@@ -1,3 +1,15 @@
+export class ProfilePayload {
+  public_key: string;
+  image: string;
+  alias: string;
+  bio: string;
+}
+
+export class PutProfilePayload {
+  alias: string;
+  bio: string;
+}
+
 export enum HairVariant {
   Variant01 = 'variant01',
   Variant02 = 'variant02',

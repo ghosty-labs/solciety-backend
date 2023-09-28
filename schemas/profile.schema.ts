@@ -14,11 +14,12 @@ export class ProfileDB {
   public_key: string;
   @Prop({ required: true, type: String })
   image: string;
-  @Prop({ default: null })
+  @Prop({ default: '-' })
   alias?: string;
+  @Prop({ default: 'Hello, Solciety!' })
+  bio?: string;
   @Prop({ default: false })
   has_new_post: boolean;
-  @Prop()
   @Prop()
   created_at?: number;
   @Prop()

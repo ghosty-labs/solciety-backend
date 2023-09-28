@@ -1,4 +1,5 @@
 import {
+  Body,
   Controller,
   Headers,
   Put,
@@ -7,12 +8,15 @@ import {
 import { ProfileService } from './profile.service';
 import base58 = require('bs58');
 import nacl = require('tweetnacl');
-@Controller('auth')
+import { PutProfileBodyDto } from './profile.dto';
+import { PutProfilePayload } from './profile.entity';
+
+@Controller('profile')
 export class ProfileController {
   constructor(private readonly profileService: ProfileService) {}
 
-  @Put('/signin')
-  async signin(@Headers() headers: any) {
+  @Put('/')
+  async signin(@Headers() headers: any, @Body() body: PutProfileBodyDto) {
     const authorization = headers.authorization;
     const decodedAuthHeader = Buffer.from(authorization, 'base64').toString();
     const authHeaderParts = decodedAuthHeader.split('&');
@@ -34,7 +38,15 @@ export class ProfileController {
 
     if (!isSigned) throw new UnauthorizedException(`error: signin failed`);
 
-    const profile = await this.profileService.updateOrCreateProfile(pubKey);
+    const profilePayload: PutProfilePayload = {
+      alias: body.alias,
+      bio: body.bio,
+    };
+
+    const profile = await this.profileService.updateOrCreateProfile(
+      pubKey,
+      profilePayload,
+    );
     return profile;
   }
 }

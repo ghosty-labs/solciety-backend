@@ -2,7 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { ProfileDB, ProfileDocument } from 'schemas/profile.schema';
-import { HairVariant } from './profile.entity';
+import { ProfilePayload, PutProfilePayload } from './profile.entity';
+import { generateProfileImage } from 'utils/profileImage';
 
 @Injectable()
 export class ProfileService {
@@ -11,21 +12,21 @@ export class ProfileService {
     private profileModel: Model<ProfileDocument>,
   ) {}
 
-  async updateOrCreateProfile(publicKey: string) {
-    const randomValue = Math.floor(
-      Math.random() * Object.keys(HairVariant).length,
+  async updateOrCreateProfile(
+    publicKey: string,
+    putProfilePayload: PutProfilePayload,
+  ) {
+    const profilePayload: ProfilePayload = Object.assign(
+      {
+        public_key: publicKey,
+        image: generateProfileImage(publicKey),
+      },
+      putProfilePayload,
     );
-    const randomHairVariant =
-      HairVariant[Object.keys(HairVariant)[randomValue]];
 
     return await this.profileModel.findOneAndUpdate(
       { public_key: publicKey },
-      {
-        $set: {
-          public_key: publicKey,
-          image: `https://api.dicebear.com/7.x/lorelei/svg?seed=${publicKey}&backgroundColor=3f3f46&scale=150&hair=${randomHairVariant}`,
-        },
-      },
+      { $set: profilePayload },
       { upsert: true, returnDocument: 'after' },
     );
   }
