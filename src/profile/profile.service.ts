@@ -20,7 +20,9 @@ export class ProfileService {
     publicKey: string,
     putProfilePayload: PutProfilePayload,
   ) {
-    await this.validateAlias(putProfilePayload.alias);
+    if (putProfilePayload.alias !== null) {
+      await this.validateAlias(putProfilePayload.alias);
+    }
 
     const profilePayload: ProfilePayload = Object.assign(
       {
