@@ -1,7 +1,9 @@
-import { Body, Controller, Get, Put, Query } from '@nestjs/common';
+import { Controller, Get, Put, Query, Req, UseGuards } from '@nestjs/common';
 import { PostingService } from './posting.service';
 import { GetNewPostStatusQueryDto, GetPostingQueryDto } from './posting.dto';
 import { ProfileService } from 'src/profile/profile.service';
+import { AuthGuard } from 'guards/auth.guard';
+import { RequestWithPublicKey } from 'src/profile/profile.entity';
 
 @Controller('posting')
 export class PostingController {
@@ -34,9 +36,10 @@ export class PostingController {
     return await this.postingService.getNewPostingStatus(publicKey);
   }
 
+  @UseGuards(AuthGuard)
   @Put('/new-post-status')
-  async setNewPostStatus(@Body() body: GetNewPostStatusQueryDto) {
-    const publicKey = body.public_key;
+  async setNewPostStatus(@Req() req: RequestWithPublicKey) {
+    const publicKey = req.publicKey;
     return await this.profileService.updateHasNewPostByPublicKey(publicKey);
   }
 }
