@@ -14,9 +14,9 @@ export class ProfileDB {
   public_key: string;
   @Prop({ required: true, type: String })
   image: string;
-  @Prop({ default: '-' })
+  @Prop({ default: null })
   alias?: string;
-  @Prop({ default: 'Hello, Solciety!' })
+  @Prop({ default: null })
   bio?: string;
   @Prop({ default: false })
   has_new_post: boolean;

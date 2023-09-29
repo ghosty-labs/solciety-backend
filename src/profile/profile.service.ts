@@ -20,10 +20,7 @@ export class ProfileService {
     publicKey: string,
     putProfilePayload: PutProfilePayload,
   ) {
-    const aliasExist = await this.getProfileByAlias(putProfilePayload.alias);
-    if (aliasExist) {
-      throw new BadRequestException(`alias already exist`);
-    }
+    await this.validateAlias(putProfilePayload.alias);
 
     const profilePayload: ProfilePayload = Object.assign(
       {
@@ -51,8 +48,20 @@ export class ProfileService {
     return await this.profileModel.findOne({ alias });
   }
 
-  private validateAlias(alias: string) {
+  private async validateAlias(alias: string) {
+    const aliasExist = await this.getProfileByAlias(alias);
+    if (aliasExist) {
+      throw new BadRequestException(`alias already exist`);
+    }
+
     const suffix = alias.slice(-3);
-    // TODO check suffix .sol
+    if (suffix !== '.sol') {
+      throw new BadRequestException(`alias must end with .sol`);
+    }
+
+    const userAlias = alias.split('.')[0];
+    if (userAlias.length < 3) {
+      throw new BadRequestException(`alias has minimum of 3 characters`);
+    }
   }
 }
