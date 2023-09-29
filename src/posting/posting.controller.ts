@@ -1,10 +1,14 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { Body, Controller, Get, Put, Query } from '@nestjs/common';
 import { PostingService } from './posting.service';
 import { GetNewPostStatusQueryDto, GetPostingQueryDto } from './posting.dto';
+import { ProfileService } from 'src/profile/profile.service';
 
 @Controller('posting')
 export class PostingController {
-  constructor(private readonly postingService: PostingService) {}
+  constructor(
+    private readonly postingService: PostingService,
+    private readonly profileService: ProfileService,
+  ) {}
 
   @Get('/')
   async findPosting(@Query() query: GetPostingQueryDto) {
@@ -28,5 +32,11 @@ export class PostingController {
   async getNewPostStatus(@Query() query: GetNewPostStatusQueryDto) {
     const publicKey = query.public_key;
     return await this.postingService.getNewPostingStatus(publicKey);
+  }
+
+  @Put('/new-post-status')
+  async setNewPostStatus(@Body() body: GetNewPostStatusQueryDto) {
+    const publicKey = body.public_key;
+    return await this.profileService.updateHasNewPostByPublicKey(publicKey);
   }
 }

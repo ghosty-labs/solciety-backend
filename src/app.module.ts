@@ -12,6 +12,7 @@ import { CommentConsumerModule } from './comment-consumer/comment-consumer.modul
 import { ProfileController } from './profile/profile.controller';
 import { ProfileService } from './profile/profile.service';
 import { ProfileModule } from './profile/profile.module';
+import { LikeModule } from './like/like.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { ProfileModule } from './profile/profile.module';
     PostingModule,
     CommentModule,
     ProfileModule,
+    LikeModule,
   ],
   controllers: [AppController, ProfileController],
   providers: [AppService, ProfileService],

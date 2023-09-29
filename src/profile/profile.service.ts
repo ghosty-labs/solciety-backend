@@ -20,9 +20,11 @@ export class ProfileService {
     publicKey: string,
     putProfilePayload: PutProfilePayload,
   ) {
-    if (putProfilePayload.alias !== null) {
-      await this.validateAlias(putProfilePayload.alias);
-    }
+    // TODO refactor this
+    if (putProfilePayload.alias === undefined) putProfilePayload.alias = null;
+    if (putProfilePayload.bio === undefined) putProfilePayload.bio = null;
+
+    await this.validateAlias(putProfilePayload.alias);
 
     const profilePayload: ProfilePayload = Object.assign(
       {
@@ -46,11 +48,20 @@ export class ProfileService {
     );
   }
 
+  async updateHasNewPostByPublicKey(publicKey: string) {
+    return await this.profileModel.updateOne(
+      { public_key: publicKey },
+      { $set: { has_new_post: false } },
+    );
+  }
+
   private async getProfileByAlias(alias: string) {
     return await this.profileModel.findOne({ alias });
   }
 
-  private async validateAlias(alias: string) {
+  private async validateAlias(alias: string | null) {
+    if (alias === null) return;
+
     const aliasExist = await this.getProfileByAlias(alias);
     if (aliasExist) {
       throw new BadRequestException(`alias already exist`);
