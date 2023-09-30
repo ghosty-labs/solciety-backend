@@ -13,6 +13,7 @@ import { ProfileController } from './profile/profile.controller';
 import { ProfileService } from './profile/profile.service';
 import { ProfileModule } from './profile/profile.module';
 import { LikeModule } from './like/like.module';
+import { LikeController } from './like/like.controller';
 
 @Module({
   imports: [
@@ -31,7 +32,7 @@ import { LikeModule } from './like/like.module';
     ProfileModule,
     LikeModule,
   ],
-  controllers: [AppController, ProfileController],
+  controllers: [AppController, ProfileController, LikeController],
   providers: [AppService, ProfileService],
 })
 export class AppModule {}
