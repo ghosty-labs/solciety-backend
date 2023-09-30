@@ -106,7 +106,6 @@ export class PostingService {
       user: posting.user,
       tag: posting.tag,
       content: posting.content,
-      created_at: posting.timestamp,
       total_comment: 0,
       total_like: 0,
     });

@@ -25,7 +25,7 @@ export class PostDB {
   @Prop({ default: 0 })
   total_like: number;
   @Prop()
-  created_at: number;
+  created_at?: number;
   @Prop()
   updated_at?: number;
 }
