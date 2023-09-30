@@ -20,6 +20,10 @@ export class PostDB {
   tag: string;
   @Prop({ required: true, type: String })
   content: string;
+  @Prop({ default: 0 })
+  total_comment: number;
+  @Prop({ default: 0 })
+  total_like: number;
   @Prop()
   created_at: number;
   @Prop()

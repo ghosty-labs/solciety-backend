@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PostingLogData, PostingPayloadData } from './posting.entity';
 import { InjectModel } from '@nestjs/mongoose';
 import { PostDB, PostDocument } from 'schemas/post.schema';
-import { Model } from 'mongoose';
+import { ClientSession, Model } from 'mongoose';
 import { ProfileDB, ProfileDocument } from 'schemas/profile.schema';
 
 @Injectable()
@@ -60,6 +60,20 @@ export class PostingService {
     aggregations.push({ $skip: skip });
     aggregations.push({ $limit: limit });
 
+    aggregations.push({
+      $lookup: {
+        from: 'profiles',
+        as: 'profiles',
+        localField: 'user',
+        foreignField: 'public_key',
+      },
+    });
+    aggregations.push({ $set: { profile: { $first: '$profiles' } } });
+    aggregations.push({
+      $set: { image: '$profile.image', alias: '$profile.alias' },
+    });
+    aggregations.push({ $unset: ['profiles', 'profile'] });
+
     const [posting, total] = await Promise.all([
       this.postModel.aggregate(aggregations),
       this.postModel.aggregate(
@@ -93,7 +107,31 @@ export class PostingService {
       tag: posting.tag,
       content: posting.content,
       created_at: posting.timestamp,
+      total_comment: 0,
+      total_like: 0,
     });
     await createPost.save();
+  }
+
+  async incrementTotalCommentWithSession(
+    session: ClientSession,
+    postPublicKey: string,
+  ) {
+    await this.postModel.updateOne(
+      { key: postPublicKey },
+      { $inc: { total_comment: 1 } },
+      { session },
+    );
+  }
+
+  async incrementTotalLikeWithSession(
+    session: ClientSession,
+    postPublicKey: string,
+  ) {
+    await this.postModel.updateOne(
+      { key: postPublicKey },
+      { $inc: { total_like: 1 } },
+      { session },
+    );
   }
 }

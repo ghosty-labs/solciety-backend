@@ -23,5 +23,13 @@ export class GetNewPostStatusQueryDto {
   public_key: string;
 }
 
+export class LikePostBodyDto {
+  post: string;
+}
+
+export class UnlikePostBodyDto {
+  post: string;
+}
+
 export class GetPostingResponseDto extends PostingDto {}
 export class GetNewPostStatusResponseDto extends ProfileDto {}
