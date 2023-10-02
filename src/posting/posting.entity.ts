@@ -17,4 +17,5 @@ export class PostingPayloadData {
   user: string;
   tag: string;
   search: string;
+  likedBy?: string;
 }

@@ -40,19 +40,6 @@ export class PostingService {
       });
     }
 
-    aggregations.push({
-      $lookup: {
-        from: 'comments',
-        as: 'comments',
-        localField: 'key',
-        foreignField: 'post',
-      },
-    });
-    aggregations.push({
-      $addFields: { total_comment: { $size: '$comments' } },
-    });
-    aggregations.push({ $unset: 'comments' });
-
     aggregations.push({ $sort: { created_at: -1 } });
 
     const aggregationMatches = [...aggregations];
@@ -73,6 +60,35 @@ export class PostingService {
       $set: { image: '$profile.image', alias: '$profile.alias' },
     });
     aggregations.push({ $unset: ['profiles', 'profile'] });
+
+    if (query.likedBy) {
+      aggregations.push(
+        {
+          $lookup: {
+            from: 'likes',
+            as: 'likes',
+            let: {
+              user: query.likedBy,
+              post: '$key',
+            },
+            pipeline: [
+              {
+                $match: {
+                  $expr: {
+                    $and: [
+                      { $eq: ['$user', '$$user'] },
+                      { $eq: ['$post', '$$post'] },
+                    ],
+                  },
+                },
+              },
+              { $project: { _id: 0, __v: 0, updated_at: 0 } },
+            ],
+          },
+        },
+        { $set: { likes: { $first: '$likes' } } },
+      );
+    }
 
     const [posting, total] = await Promise.all([
       this.postModel.aggregate(aggregations),

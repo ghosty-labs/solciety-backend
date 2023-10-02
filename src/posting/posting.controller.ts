@@ -13,7 +13,10 @@ export class PostingController {
   ) {}
 
   @Get('/')
-  async findPosting(@Query() query: GetPostingQueryDto) {
+  async findPosting(
+    @Req() req: RequestWithPublicKey,
+    @Query() query: GetPostingQueryDto,
+  ) {
     const { __skip, __limit } = query;
 
     const skip = parseInt(__skip) || 0;
@@ -23,6 +26,7 @@ export class PostingController {
       user: query.user,
       tag: query.tag,
       search: query.search,
+      likedBy: req.publicKey,
     };
 
     const posting = await this.postingService.findPosting(payload, skip, limit);

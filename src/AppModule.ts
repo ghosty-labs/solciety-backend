@@ -1,4 +1,9 @@
-import { Module } from '@nestjs/common';
+import {
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+  RequestMethod,
+} from '@nestjs/common';
 import { LogsWorkerModule } from './logs-worker/logs-worker.module';
 import { PostingModule } from './posting/posting.module';
 import { CommentModule } from './comment/comment.module';
@@ -9,6 +14,7 @@ import { PostingConsumerModule } from './posting-consumer/posting-consumer.modul
 import { CommentConsumerModule } from './comment-consumer/comment-consumer.module';
 import { ProfileModule } from './profile/profile.module';
 import { LikeModule } from './like/like.module';
+import { PostingMiddleware } from './posting/posting.middleware';
 
 @Module({
   imports: [
@@ -28,4 +34,10 @@ import { LikeModule } from './like/like.module';
     LikeModule,
   ],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(PostingMiddleware)
+      .forRoutes({ path: 'posting', method: RequestMethod.GET });
+  }
+}
