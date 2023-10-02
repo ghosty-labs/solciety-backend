@@ -126,10 +126,11 @@ export class PostingService {
   async incrementTotalLikeWithSession(
     session: ClientSession,
     postPublicKey: string,
+    value: number,
   ) {
     await this.postModel.updateOne(
       { key: postPublicKey },
-      { $inc: { total_like: 1 } },
+      { $inc: { total_like: value } },
       { session },
     );
   }

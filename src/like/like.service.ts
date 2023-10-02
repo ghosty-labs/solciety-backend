@@ -34,7 +34,31 @@ export class LikeService {
       await this.postingService.incrementTotalLikeWithSession(
         session,
         postPublicKey,
+        1,
       );
     });
+
+    return true
+  }
+
+  async deleteLike(publicKey: string, postPublicKey: string) {
+    const like = await this.likeModel.findOne({
+      user: publicKey,
+      post: postPublicKey,
+    });
+
+    if (!like)
+      throw new BadRequestException(`error: you have not liked this post`);
+
+    await mongoWithTransaction(this.mongooseConnection, async (session) => {
+      await this.likeModel.deleteOne({ user: publicKey, post: postPublicKey });
+      await this.postingService.incrementTotalLikeWithSession(
+        session,
+        postPublicKey,
+        -1,
+      );
+    });
+
+    return true;
   }
 }
