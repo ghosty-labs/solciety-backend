@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { ClientSession, Model } from 'mongoose';
 import { ProfileDB, ProfileDocument } from 'schemas/profile.schema';
 import { ProfilePayload, PutProfilePayload } from './profile.entity';
 import { generateProfileImage } from 'utils/profileImage';
@@ -52,6 +52,42 @@ export class ProfileService {
     return await this.profileModel.updateOne(
       { public_key: publicKey },
       { $set: { has_new_post: false } },
+    );
+  }
+
+  async incrementTotalPost(
+    session: ClientSession,
+    publicKey: string,
+    value: number,
+  ) {
+    await this.profileModel.updateOne(
+      { public_key: publicKey },
+      { $inc: { total_post: value } },
+      { session },
+    );
+  }
+
+  async incrementTotalFollower(
+    session: ClientSession,
+    publicKey: string,
+    value: number,
+  ) {
+    await this.profileModel.updateOne(
+      { public_key: publicKey },
+      { $inc: { total_follower: value } },
+      { session },
+    );
+  }
+
+  async incrementTotalFollowing(
+    session: ClientSession,
+    publicKey: string,
+    value: number,
+  ) {
+    await this.profileModel.updateOne(
+      { public_key: publicKey },
+      { $inc: { total_following: value } },
+      { session },
     );
   }
 

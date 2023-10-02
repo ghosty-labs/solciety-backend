@@ -3,6 +3,12 @@ import { Injectable, OnModuleInit } from '@nestjs/common';
 import { Connection, PublicKey } from '@solana/web3.js';
 import { Queue } from 'bull';
 import { CommentLogData, CommentLogPrefix } from 'src/comment/comment.entity';
+import {
+  FollowJobNameEnum,
+  FollowLogPrefix,
+  FollowUserLogData,
+  UnfollowUserLogData,
+} from 'src/follow/follow.entity';
 import { PostingLogData, PostingLogPrefix } from 'src/posting/posting.entity';
 
 @Injectable()
@@ -13,6 +19,9 @@ export class LogsWorkerService implements OnModuleInit {
 
     @InjectQueue('COMMENT_LOGS_INDEXER_WORKER')
     private commentLogsQueue: Queue,
+
+    @InjectQueue('FOLLOW_LOGS_INDEXER_WORKER')
+    private followLogsQueue: Queue,
   ) {}
 
   async onModuleInit() {
@@ -75,6 +84,26 @@ export class LogsWorkerService implements OnModuleInit {
 
             case CommentLogPrefix.DeleteComment:
               //TODO handle
+              break;
+
+            case FollowLogPrefix.FollowUser:
+              const followData: FollowUserLogData = JSON.parse(objectValue);
+              followData['signature'] = result.signature;
+
+              await this.followLogsQueue.add(
+                FollowJobNameEnum.Follow,
+                followData,
+              );
+              break;
+
+            case FollowLogPrefix.UnfollowUser:
+              const unfollowData: UnfollowUserLogData = JSON.parse(objectValue);
+              unfollowData['signature'] = result.signature;
+
+              await this.followLogsQueue.add(
+                FollowJobNameEnum.Unfollow,
+                unfollowData,
+              );
               break;
 
             default:
