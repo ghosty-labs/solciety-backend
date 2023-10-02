@@ -23,6 +23,7 @@ export class PostingController {
     const limit = parseInt(__limit) || 50;
 
     const payload = {
+      key: query.key,
       user: query.user,
       tag: query.tag,
       search: query.search,

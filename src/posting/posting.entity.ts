@@ -14,6 +14,7 @@ export class PostingLogData {
 }
 
 export class PostingPayloadData {
+  key: string;
   user: string;
   tag: string;
   search: string;

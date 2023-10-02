@@ -17,6 +17,9 @@ export class PostingService {
   async findPosting(query: PostingPayloadData, skip: number, limit: number) {
     const aggregations = [];
 
+    if (query.key) {
+      aggregations.push({ $match: { key: query.key } });
+    }
     if (query.user) {
       aggregations.push({ $match: { user: query.user } });
     }

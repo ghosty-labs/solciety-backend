@@ -13,6 +13,7 @@ export class PostingDto {
 }
 
 export class GetPostingQueryDto {
+  key: string;
   user: string;
   tag: string;
   search: string;
