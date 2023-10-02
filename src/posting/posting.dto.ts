@@ -1,3 +1,4 @@
+import { IsNotEmpty, IsString } from 'class-validator';
 import { ObjectId } from 'mongoose';
 import { ProfileDto } from 'src/profile/profile.dto';
 
@@ -24,10 +25,14 @@ export class GetNewPostStatusQueryDto {
 }
 
 export class LikePostBodyDto {
+  @IsString()
+  @IsNotEmpty()
   post: string;
 }
 
 export class UnlikePostBodyDto {
+  @IsString()
+  @IsNotEmpty()
   post: string;
 }
 

@@ -38,7 +38,7 @@ export class LikeService {
       );
     });
 
-    return true
+    return true;
   }
 
   async deleteLike(publicKey: string, postPublicKey: string) {
