@@ -91,6 +91,13 @@ export class ProfileService {
     );
   }
 
+  async updateHasNotification(publicKey: string) {
+    return await this.profileModel.updateOne(
+      { public_key: publicKey },
+      { $set: { has_notification: false } },
+    );
+  }
+
   private async getProfileByAlias(alias: string) {
     return await this.profileModel.findOne({ alias });
   }

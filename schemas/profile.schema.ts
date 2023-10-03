@@ -20,6 +20,8 @@ export class ProfileDB {
   bio?: string;
   @Prop({ default: false })
   has_new_post: boolean;
+  @Prop({ default: false })
+  has_notification: boolean;
   @Prop({ default: 0 })
   total_post?: number;
   @Prop({ default: 0 })

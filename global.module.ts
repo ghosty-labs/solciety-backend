@@ -8,6 +8,11 @@ import { ProfileDB, ProfileSchema } from 'schemas/profile.schema';
 import { FollowModule } from './src/follow/follow.module';
 import { FollowConsumerModule } from './src/follow-consumer/follow-consumer.module';
 import { FollowDB, FollowSchema } from 'schemas/follow.schema';
+import { NotificationModule } from './src/notification/notification.module';
+import {
+  NotificationDB,
+  NotificationSchema,
+} from 'schemas/notification.schema';
 
 @Global()
 @Module({
@@ -33,12 +38,18 @@ import { FollowDB, FollowSchema } from 'schemas/follow.schema';
         name: FollowDB.name,
         schema: FollowSchema,
       },
+      {
+        name: NotificationDB.name,
+        schema: NotificationSchema,
+      },
     ]),
     BullModule.registerQueue({ name: 'POST_LOGS_INDEXER_WORKER' }),
     BullModule.registerQueue({ name: 'COMMENT_LOGS_INDEXER_WORKER' }),
     BullModule.registerQueue({ name: 'FOLLOW_LOGS_INDEXER_WORKER' }),
+    BullModule.registerQueue({ name: 'NOTIFICATION_QUEUE' }),
     FollowModule,
     FollowConsumerModule,
+    NotificationModule,
   ],
   exports: [MongooseModule, BullModule],
 })
