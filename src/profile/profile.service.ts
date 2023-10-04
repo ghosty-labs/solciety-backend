@@ -1,18 +1,22 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { ClientSession, Model } from 'mongoose';
+import { InjectConnection, InjectModel } from '@nestjs/mongoose';
+import { ClientSession, Connection, Model } from 'mongoose';
 import { ProfileDB, ProfileDocument } from 'schemas/profile.schema';
-import { ProfilePayload, PutProfilePayload } from './profile.entity';
+import { Profile, ProfilePayload, PutProfilePayload } from './profile.entity';
 import { generateProfileImage } from 'utils/profileImage';
+import { mongoWithTransaction } from 'utils/mongoWithTransaction';
 
 @Injectable()
 export class ProfileService {
   constructor(
     @InjectModel(ProfileDB.name)
     private profileModel: Model<ProfileDocument>,
+
+    @InjectConnection()
+    private mongooseConnection: Connection,
   ) {}
 
-  async getProfile(publicKey: string) {
+  async getProfile(publicKey: string): Promise<Profile> {
     return await this.profileModel.findOne({ public_key: publicKey });
   }
 
@@ -91,11 +95,24 @@ export class ProfileService {
     );
   }
 
-  async updateHasNotification(publicKey: string) {
+  async updateHasNotificationToTrue(session: ClientSession, publicKey: string) {
     return await this.profileModel.updateOne(
       { public_key: publicKey },
       { $set: { has_notification: false } },
+      { session },
     );
+  }
+
+  async updateHasNotificationToFalse(publicKey: string) {
+    await mongoWithTransaction(this.mongooseConnection, async (session) => {
+      await this.profileModel.updateOne(
+        { public_key: publicKey },
+        { $set: { has_notification: false } },
+        { session },
+      );
+    });
+
+    return true;
   }
 
   private async getProfileByAlias(alias: string) {

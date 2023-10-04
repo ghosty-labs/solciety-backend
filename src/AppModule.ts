@@ -15,6 +15,7 @@ import { CommentConsumerModule } from './comment-consumer/comment-consumer.modul
 import { ProfileModule } from './profile/profile.module';
 import { LikeModule } from './like/like.module';
 import { PostingMiddleware } from './posting/posting.middleware';
+import { FollowConsumerModule } from './follow-consumer/follow-consumer.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { PostingMiddleware } from './posting/posting.middleware';
     LogsWorkerModule,
     PostingConsumerModule,
     CommentConsumerModule,
+    FollowConsumerModule,
     PostingModule,
     CommentModule,
     ProfileModule,

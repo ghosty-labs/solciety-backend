@@ -1,8 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { ClientSession, Model } from 'mongoose';
 import { NotificationDB } from 'schemas/notification.schema';
 import { ProfileService } from 'src/profile/profile.service';
+import {
+  CreateNotificationPayloadData,
+  FindNotificationPayloadData,
+} from './notification.entity';
 
 @Injectable()
 export class NotificationService {
@@ -13,7 +17,45 @@ export class NotificationService {
     private readonly profileService: ProfileService,
   ) {}
 
-  async updateHasNotification(publicKey: string) {
-    return await this.profileService.updateHasNotification(publicKey);
+  async updateHasNotificationByUser(publicKey: string) {
+    return await this.profileService.updateHasNotificationToFalse(publicKey);
+  }
+
+  async findNotifications(
+    query: FindNotificationPayloadData,
+    skip: number,
+    limit: number,
+  ) {
+    const aggregations = [];
+
+    aggregations.push({
+      $match: { user: query.publicKey },
+    });
+
+    const aggregationMatches = [...aggregations];
+
+    aggregations.push({ $skip: skip });
+    aggregations.push({ $limit: limit });
+
+    const [notifications, total] = await Promise.all([
+      this.notificationModel.aggregate(aggregations),
+      this.notificationModel.aggregate(
+        aggregationMatches.concat([{ $count: 'count' }]),
+      ),
+    ]);
+
+    return {
+      results: notifications,
+      total: total[0]?.count || 0,
+      skip,
+      limit,
+    };
+  }
+
+  async createNotification(
+    session: ClientSession,
+    payload: CreateNotificationPayloadData,
+  ) {
+    await new this.notificationModel<NotificationDB>(payload).save({ session });
   }
 }

@@ -14,13 +14,13 @@ export class NotificationDB {
   @Prop({ required: true, type: String, enum: NotificationType })
   type: NotificationType;
   @Prop({ required: true, type: String })
-  signature: string;
+  key: string;
   @Prop({ required: true, type: String })
   user: string;
   @Prop({ required: true, type: String })
   from: string;
   @Prop({ type: String })
-  icon: string;
+  icon?: string;
   @Prop()
   data?: any;
   @Prop()
