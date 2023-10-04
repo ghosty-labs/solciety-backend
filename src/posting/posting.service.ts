@@ -112,6 +112,10 @@ export class PostingService {
     return await this.postModel.findOne({ signature });
   }
 
+  async getPostingByKey(key: string) {
+    return await this.postModel.findOne({ key });
+  }
+
   async getNewPostingStatus(publicKey: string) {
     return await this.profileModel
       .findOne({ public_key: publicKey })

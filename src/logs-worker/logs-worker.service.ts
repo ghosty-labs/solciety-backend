@@ -76,7 +76,13 @@ export class LogsWorkerService implements OnModuleInit {
               const commentData: CommentLogData = JSON.parse(objectValue);
               commentData['signature'] = result.signature;
 
-              await this.commentLogsQueue.add(commentData);
+              await Promise.all([
+                this.commentLogsQueue.add(commentData),
+                this.notificationQueue.add(
+                  NotificationType.Comment,
+                  commentData,
+                ),
+              ]);
               break;
 
             case CommentLogPrefix.UpdateComment:

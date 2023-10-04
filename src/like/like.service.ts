@@ -4,6 +4,10 @@ import { InjectConnection, InjectModel } from '@nestjs/mongoose';
 import { LikeDB, LikeDocument } from 'schemas/like.schema';
 import { mongoWithTransaction } from 'utils/mongoWithTransaction';
 import { PostingService } from 'src/posting/posting.service';
+import { InjectQueue } from '@nestjs/bull';
+import { Queue } from 'bull';
+import { NotificationType } from 'src/notification/notification.entity';
+import { LikeData } from './like.entity';
 
 @Injectable()
 export class LikeService {
@@ -13,6 +17,9 @@ export class LikeService {
 
     @InjectConnection()
     private readonly mongooseConnection: Connection,
+
+    @InjectQueue('NOTIFICATION_QUEUE')
+    private notificationQueue: Queue,
 
     private readonly postingService: PostingService,
   ) {}
@@ -37,6 +44,11 @@ export class LikeService {
         1,
       );
     });
+
+    await this.notificationQueue.add(NotificationType.Like, {
+      user: publicKey,
+      post: postPublicKey,
+    } as LikeData);
 
     return true;
   }

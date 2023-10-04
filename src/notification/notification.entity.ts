@@ -1,6 +1,7 @@
 export enum NotificationType {
   Follow = 'FOLLOW',
   Like = 'LIKE',
+  Comment = 'COMMENT',
 }
 
 export class FindNotificationPayloadData {
