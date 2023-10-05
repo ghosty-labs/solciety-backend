@@ -21,7 +21,7 @@ export class NotificationDB {
   from: string;
   @Prop({ type: String })
   icon?: string;
-  @Prop()
+  @Prop({ type: Object })
   data?: any;
   @Prop()
   created_at?: number;
