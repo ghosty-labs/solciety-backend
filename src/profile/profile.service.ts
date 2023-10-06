@@ -125,7 +125,7 @@ export class ProfileService {
   async updateHasNotificationToTrue(session: ClientSession, publicKey: string) {
     return await this.profileModel.updateOne(
       { public_key: publicKey },
-      { $set: { has_notification: false } },
+      { $set: { has_notification: true } },
       { session },
     );
   }
