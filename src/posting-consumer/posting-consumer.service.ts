@@ -23,6 +23,7 @@ export class PostingConsumerProcessor {
       await Promise.all([
         this.postingService.createPosting(postingData),
         this.profileService.updateHasNewPost(postingData.user),
+        this.profileService.incrementTotalPost(postingData.user, 1),
       ]);
     }
 

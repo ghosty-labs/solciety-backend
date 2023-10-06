@@ -91,15 +91,10 @@ export class ProfileService {
     );
   }
 
-  async incrementTotalPost(
-    session: ClientSession,
-    publicKey: string,
-    value: number,
-  ) {
+  async incrementTotalPost(publicKey: string, value: number) {
     await this.profileModel.updateOne(
       { public_key: publicKey },
       { $inc: { total_post: value } },
-      { session },
     );
   }
 
