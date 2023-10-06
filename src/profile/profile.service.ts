@@ -5,6 +5,7 @@ import { ProfileDB, ProfileDocument } from 'schemas/profile.schema';
 import { Profile, ProfilePayload, PutProfilePayload } from './profile.entity';
 import { generateProfileImage } from 'utils/profileImage';
 import { mongoWithTransaction } from 'utils/mongoWithTransaction';
+import { FollowService } from 'src/follow/follow.service';
 
 @Injectable()
 export class ProfileService {
@@ -14,10 +15,41 @@ export class ProfileService {
 
     @InjectConnection()
     private mongooseConnection: Connection,
+
+    private readonly followService: FollowService,
   ) {}
 
-  async getProfile(publicKey: string): Promise<Profile> {
-    return await this.profileModel.findOne({ public_key: publicKey });
+  async getProfile(
+    publicKey: string,
+    userPublicKey?: string | null | undefined,
+  ) {
+    const profile = await this.profileModel.findOne({
+      public_key: publicKey,
+    });
+    if (!profile) throw new BadRequestException(`Profile not found`);
+
+    const result: Profile = {
+      public_key: profile.public_key,
+      image: profile.image,
+      alias: profile.alias,
+      bio: profile.bio,
+      has_new_post: profile.has_new_post,
+      has_notification: profile.has_notification,
+      total_post: profile.total_post,
+      total_follower: profile.total_follower,
+      total_following: profile.total_following,
+      created_at: profile.created_at,
+      updated_at: profile.updated_at,
+    };
+
+    if (typeof userPublicKey === 'string') {
+      const follow = await this.followService.getFollowByUser(userPublicKey);
+      if (follow.following === publicKey) {
+        result['is_followed'] = true;
+      }
+    }
+
+    return result;
   }
 
   async updateOrCreateProfile(

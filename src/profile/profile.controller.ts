@@ -36,9 +36,15 @@ export class ProfileController {
   }
 
   @Get('/')
-  async getProfile(@Query() query: GetProfileQueryDto) {
+  async getProfile(
+    @Req() req: RequestWithPublicKey,
+    @Query() query: GetProfileQueryDto,
+  ) {
     const publicKey = query.public_key;
-    const profile = await this.profileService.getProfile(publicKey);
+    const profile = await this.profileService.getProfile(
+      publicKey,
+      req.publicKey,
+    );
 
     return profile;
   }

@@ -10,6 +10,7 @@ export class Profile {
   total_following: number;
   created_at: number;
   updated_at: number;
+  is_followed?: boolean;
 }
 
 export class ProfilePayload {

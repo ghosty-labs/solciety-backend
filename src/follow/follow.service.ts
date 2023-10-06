@@ -11,11 +11,11 @@ export class FollowService {
     private followModel: Model<FollowDocument>,
   ) {}
 
-  async getFollowByUser(user: string) {
+  async getFollowByUser(user: string): Promise<FollowDB> {
     return await this.followModel.findOne({ user });
   }
 
-  async getFollowByFollowing(following: string) {
+  async getFollowByFollowing(following: string): Promise<FollowDB> {
     return await this.followModel.findOne({ following });
   }
 

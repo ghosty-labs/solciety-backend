@@ -14,7 +14,7 @@ import { PostingConsumerModule } from './posting-consumer/posting-consumer.modul
 import { CommentConsumerModule } from './comment-consumer/comment-consumer.module';
 import { ProfileModule } from './profile/profile.module';
 import { LikeModule } from './like/like.module';
-import { PostingMiddleware } from './posting/posting.middleware';
+import { AuthMiddleware } from './posting/posting.middleware';
 import { FollowConsumerModule } from './follow-consumer/follow-consumer.module';
 
 @Module({
@@ -39,7 +39,10 @@ import { FollowConsumerModule } from './follow-consumer/follow-consumer.module';
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
-      .apply(PostingMiddleware)
-      .forRoutes({ path: 'posting', method: RequestMethod.GET });
+      .apply(AuthMiddleware)
+      .forRoutes(
+        { path: 'posting', method: RequestMethod.GET },
+        { path: 'profile', method: RequestMethod.GET },
+      );
   }
 }
