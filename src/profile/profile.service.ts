@@ -77,7 +77,7 @@ export class ProfileService {
     );
   }
 
-  async updateHasNewPost(publicKey: string) {
+  async updateHasNewPostExcept(publicKey: string) {
     return await this.profileModel.updateMany(
       { public_key: { $ne: publicKey } },
       { $set: { has_new_post: true } },
