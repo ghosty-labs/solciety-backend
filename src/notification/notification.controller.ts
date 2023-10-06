@@ -29,7 +29,7 @@ export class NotificationController {
     const { __skip, __limit } = query;
 
     const skip = parseInt(__skip) || 0;
-    const limit = parseInt(__limit) || 0;
+    const limit = parseInt(__limit) || 30;
 
     const payload = { publicKey };
 
