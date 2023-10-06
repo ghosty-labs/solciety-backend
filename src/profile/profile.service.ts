@@ -44,7 +44,7 @@ export class ProfileService {
 
     if (typeof userPublicKey === 'string') {
       const follow = await this.followService.getFollowByUser(userPublicKey);
-      if (follow.following === publicKey) {
+      if (follow && follow.following === publicKey) {
         result['is_followed'] = true;
       }
     }
