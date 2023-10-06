@@ -16,6 +16,7 @@ import { ProfileModule } from './profile/profile.module';
 import { LikeModule } from './like/like.module';
 import { AuthMiddleware } from './posting/posting.middleware';
 import { FollowConsumerModule } from './follow-consumer/follow-consumer.module';
+import { NotificationConsumerModule } from './notification-consumer/notification-consumer.module';
 import { NotificationModule } from './notification/notification.module';
 
 @Module({
@@ -31,11 +32,12 @@ import { NotificationModule } from './notification/notification.module';
     PostingConsumerModule,
     CommentConsumerModule,
     FollowConsumerModule,
-    NotificationModule,
+    NotificationConsumerModule,
     PostingModule,
     CommentModule,
     ProfileModule,
     LikeModule,
+    NotificationModule,
   ],
 })
 export class AppModule implements NestModule {
