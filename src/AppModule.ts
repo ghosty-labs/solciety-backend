@@ -16,6 +16,7 @@ import { ProfileModule } from './profile/profile.module';
 import { LikeModule } from './like/like.module';
 import { AuthMiddleware } from './posting/posting.middleware';
 import { FollowConsumerModule } from './follow-consumer/follow-consumer.module';
+import { NotificationModule } from './notification/notification.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { FollowConsumerModule } from './follow-consumer/follow-consumer.module';
     PostingConsumerModule,
     CommentConsumerModule,
     FollowConsumerModule,
+    NotificationModule,
     PostingModule,
     CommentModule,
     ProfileModule,
