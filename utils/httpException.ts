@@ -13,8 +13,8 @@ interface HttpExceptionResponse {
   error: string;
 }
 
-@Catch(HttpException)
-export class HttpExceptionFilter implements ExceptionFilter {
+@Catch()
+export class AppExceptionFilter implements ExceptionFilter {
   catch(exception: any, host: ArgumentsHost) {
     const context = host.switchToHttp();
     const response = context.getResponse<Response>();
