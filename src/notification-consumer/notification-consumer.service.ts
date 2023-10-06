@@ -111,8 +111,8 @@ export class NotificationConsumerProcessor {
     };
 
     await mongoWithTransaction(this.mongooseConnection, async (session) => {
-      await this.notificationService.createNotification(session, payload),
-        await this.profileService.updateHasNotificationToTrue(session, user);
+      await this.notificationService.createNotification(session, payload);
+      await this.profileService.updateHasNotificationToTrue(session, user);
     });
 
     done();
