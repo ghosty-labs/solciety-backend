@@ -38,7 +38,7 @@ export class PostingController {
   @Get('/new-post-status')
   async getNewPostStatus(@Query() query: GetNewPostStatusQueryDto) {
     const publicKey = query.public_key;
-    return await this.postingService.getNewPostingStatus(publicKey);
+    return await this.profileService.getNewPostingStatus(publicKey);
   }
 
   @UseGuards(AuthGuard)

@@ -52,6 +52,18 @@ export class ProfileService {
     return result;
   }
 
+  async getNewPostingStatus(publicKey: string) {
+    return await this.profileModel
+      .findOne({ public_key: publicKey })
+      .select({ _id: 0, has_new_post: 1 });
+  }
+
+  async getHasNotificationStatus(publicKey: string) {
+    return await this.profileModel
+      .findOne({ public_key: publicKey })
+      .select({ _id: 0, has_notification: 1 });
+  }
+
   async updateOrCreateProfile(
     publicKey: string,
     putProfilePayload: PutProfilePayload,

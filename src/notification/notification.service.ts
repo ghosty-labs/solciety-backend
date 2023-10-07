@@ -21,6 +21,10 @@ export class NotificationService {
     return await this.profileService.updateHasNotificationToFalse(publicKey);
   }
 
+  async getNotificationStatus(publicKey: string) {
+    return await this.profileService.getHasNotificationStatus(publicKey);
+  }
+
   async findNotifications(
     query: FindNotificationPayloadData,
     skip: number,

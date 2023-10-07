@@ -1,4 +1,4 @@
-import { Process, Processor } from '@nestjs/bull';
+import { OnQueueFailed, Process, Processor } from '@nestjs/bull';
 import {
   CreateNotificationPayloadData,
   NotificationType,
@@ -14,6 +14,7 @@ import { NotificationService } from 'src/notification/notification.service';
 import { LikeData } from 'src/like/like.entity';
 import { PostingService } from 'src/posting/posting.service';
 import { CommentLogData } from 'src/comment/comment.entity';
+import { CommentService } from 'src/comment/comment.service';
 
 @Processor('NOTIFICATION_QUEUE')
 export class NotificationConsumerProcessor {
@@ -24,7 +25,13 @@ export class NotificationConsumerProcessor {
     private readonly profileService: ProfileService,
     private readonly postingService: PostingService,
     private readonly notificationService: NotificationService,
+    private readonly commentService: CommentService,
   ) {}
+
+  @OnQueueFailed()
+  handler(job: Job, error: Error) {
+    console.error(`Job : ${job.data} error ${error}`);
+  }
 
   @Process(NotificationType.Follow)
   async followNotification(job: Job, done: DoneCallback) {
@@ -69,7 +76,7 @@ export class NotificationConsumerProcessor {
 
     // Handle like his own posting
     if (likeData.user === posting.user) {
-      done();
+      throw new Error(`error notification to self`);
     }
 
     const payload: CreateNotificationPayloadData = {
@@ -100,6 +107,14 @@ export class NotificationConsumerProcessor {
   async commentNotification(job: Job, done: DoneCallback) {
     const commentData: CommentLogData = job.data;
 
+    const comment = await this.commentService.getCommentBySignature(
+      commentData.signature,
+    );
+
+    if (comment) {
+      throw new Error(`comment already exist`);
+    }
+
     const [posting, fromProfile] = await Promise.all([
       this.postingService.getPostingByKey(commentData.post),
       this.profileService.getProfile(commentData.user),
@@ -109,7 +124,7 @@ export class NotificationConsumerProcessor {
 
     // Handle comment his own posting
     if (commentData.user === posting.user) {
-      done();
+      throw new Error(`error notification to self`);
     }
 
     const payload: CreateNotificationPayloadData = {

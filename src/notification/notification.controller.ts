@@ -2,7 +2,10 @@ import { Controller, Get, Put, Query, Req, UseGuards } from '@nestjs/common';
 import { AuthGuard } from 'guards/auth.guard';
 import { RequestWithPublicKey } from 'src/profile/profile.entity';
 import { NotificationService } from './notification.service';
-import { GetNotificationQueryDto } from './notification.dto';
+import {
+  GetNotificationQueryDto,
+  GetNotificationStatusQueryDto,
+} from './notification.dto';
 
 @Controller('notification')
 export class NotificationController {
@@ -40,5 +43,11 @@ export class NotificationController {
     );
 
     return notifications;
+  }
+
+  @Get('/notification-status')
+  async getNotificationStatus(@Query() query: GetNotificationStatusQueryDto) {
+    const publicKey = query.public_key;
+    return await this.notificationService.getNotificationStatus(publicKey);
   }
 }

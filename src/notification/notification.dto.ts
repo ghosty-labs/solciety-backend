@@ -3,3 +3,7 @@ export class GetNotificationQueryDto {
   __skip: string;
   __limit: string;
 }
+
+export class GetNotificationStatusQueryDto {
+  public_key: string;
+}
