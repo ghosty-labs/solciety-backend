@@ -57,6 +57,7 @@ export class CommentService {
           'post_data.content': '$posts.content',
           'post_data.tag': '$posts.tag',
           'post_data.user': '$posts.user',
+          'post_data.created_at': '$posts.created_at',
         },
       });
       aggregations.push({
