@@ -28,6 +28,12 @@ export class NotificationService {
   ) {
     const aggregations = [];
 
+    if (query.type) {
+      aggregations.push({
+        $match: { type: query.type },
+      });
+    }
+
     aggregations.push({
       $match: { user: query.publicKey },
     });

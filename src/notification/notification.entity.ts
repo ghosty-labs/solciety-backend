@@ -5,6 +5,7 @@ export enum NotificationType {
 }
 
 export class FindNotificationPayloadData {
+  type: string;
   publicKey: string;
 }
 

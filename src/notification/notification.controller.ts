@@ -26,12 +26,12 @@ export class NotificationController {
   ) {
     const publicKey = req.publicKey;
 
-    const { __skip, __limit } = query;
+    const { type, __skip, __limit } = query;
 
     const skip = parseInt(__skip) || 0;
     const limit = parseInt(__limit) || 30;
 
-    const payload = { publicKey };
+    const payload = { publicKey, type };
 
     const notifications = await this.notificationService.findNotifications(
       payload,
