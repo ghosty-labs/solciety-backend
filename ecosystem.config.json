@@ -6,7 +6,8 @@
       "args": "start",
       "instances": 2,
       "exec_mode": "cluster",
-      "watch": false
+      "watch": [],
+      "ignore_watch": ["node_modules", "dist"]
     }
   ]
 }
