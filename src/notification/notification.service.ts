@@ -37,6 +37,7 @@ export class NotificationService {
     aggregations.push({
       $match: { user: query.publicKey },
     });
+    aggregations.push({ $sort: { created_at: -1 } });
 
     const aggregationMatches = [...aggregations];
 

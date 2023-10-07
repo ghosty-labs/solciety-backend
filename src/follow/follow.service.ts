@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { ClientSession, Model } from 'mongoose';
 import { FollowDB, FollowDocument } from 'schemas/follow.schema';
@@ -20,6 +20,12 @@ export class FollowService {
   }
 
   async createFollow(session: ClientSession, data: FollowPayloadData) {
+    if (data.user === data.following) {
+      throw new BadRequestException(
+        `Cannot follow your own account : ${data.user}`,
+      );
+    }
+
     const follow = new this.followModel<FollowDB>({
       signature: data.signature,
       user: data.user,

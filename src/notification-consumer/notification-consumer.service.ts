@@ -65,23 +65,32 @@ export class NotificationConsumerProcessor {
       this.profileService.getProfile(likeData.user),
     ]);
 
-    const user = posting.user;
     const fromProfileImage = fromProfile.image;
+
+    // Handle like his own posting
+    if (likeData.user === posting.user) {
+      done();
+    }
 
     const payload: CreateNotificationPayloadData = {
       type: NotificationType.Like,
       key: generatePublicKeyString(),
-      user: user,
+      user: posting.user,
       from: likeData.user,
       icon: fromProfileImage,
       data: {
-        url: '/post',
+        content: posting.content,
+        tag: posting.tag,
+        post: posting.key,
       },
     };
 
     await mongoWithTransaction(this.mongooseConnection, async (session) => {
       await this.notificationService.createNotification(session, payload);
-      await this.profileService.updateHasNotificationToTrue(session, user);
+      await this.profileService.updateHasNotificationToTrue(
+        session,
+        posting.user,
+      );
     });
 
     done();
@@ -96,23 +105,33 @@ export class NotificationConsumerProcessor {
       this.profileService.getProfile(commentData.user),
     ]);
 
-    const user = posting.user;
     const fromProfileImage = fromProfile.image;
+
+    // Handle comment his own posting
+    if (commentData.user === posting.user) {
+      done();
+    }
 
     const payload: CreateNotificationPayloadData = {
       type: NotificationType.Comment,
       key: generatePublicKeyString(),
-      user: user,
+      user: posting.user,
       from: commentData.user,
       icon: fromProfileImage,
       data: {
-        url: '/post',
+        comment: commentData.content,
+        content: posting.content,
+        tag: posting.tag,
+        post: posting.key,
       },
     };
 
     await mongoWithTransaction(this.mongooseConnection, async (session) => {
       await this.notificationService.createNotification(session, payload);
-      await this.profileService.updateHasNotificationToTrue(session, user);
+      await this.profileService.updateHasNotificationToTrue(
+        session,
+        posting.user,
+      );
     });
 
     done();
