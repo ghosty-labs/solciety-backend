@@ -1,4 +1,4 @@
-import { OnQueueFailed, Process, Processor } from '@nestjs/bull';
+import { Process, Processor } from '@nestjs/bull';
 import {
   CreateNotificationPayloadData,
   NotificationType,
@@ -27,11 +27,6 @@ export class NotificationConsumerProcessor {
     private readonly notificationService: NotificationService,
     private readonly commentService: CommentService,
   ) {}
-
-  @OnQueueFailed()
-  handler(job: Job, error: Error) {
-    console.error(`Job : ${job.data} error ${error}`);
-  }
 
   @Process(NotificationType.Follow)
   async followNotification(job: Job, done: DoneCallback) {
@@ -76,7 +71,8 @@ export class NotificationConsumerProcessor {
 
     // Handle like his own posting
     if (likeData.user === posting.user) {
-      throw new Error(`error notification to self`);
+      console.error(`error notification to self ${likeData.user}`);
+      return;
     }
 
     const payload: CreateNotificationPayloadData = {
@@ -112,7 +108,8 @@ export class NotificationConsumerProcessor {
     );
 
     if (comment) {
-      throw new Error(`comment already exist`);
+      console.error(`comment already exist ${commentData.signature}`);
+      return;
     }
 
     const [posting, fromProfile] = await Promise.all([
@@ -124,7 +121,8 @@ export class NotificationConsumerProcessor {
 
     // Handle comment his own posting
     if (commentData.user === posting.user) {
-      throw new Error(`error notification to self`);
+      console.error(`error notification to self ${commentData.user}`);
+      return;
     }
 
     const payload: CreateNotificationPayloadData = {

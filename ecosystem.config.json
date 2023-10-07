@@ -1,0 +1,11 @@
+{
+  "apps": [
+    {
+      "name": "solciety-backend",
+      "script": "npm",
+      "args": "start",
+      "instances": "max",
+      "exec_mode": "cluster"
+    }
+  ]
+}
