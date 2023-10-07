@@ -7,7 +7,7 @@ import { PostingService } from 'src/posting/posting.service';
 import { InjectQueue } from '@nestjs/bull';
 import { Queue } from 'bull';
 import { NotificationType } from 'src/notification/notification.entity';
-import { LikeData } from './like.entity';
+import { LikeData, LikePayloadData } from './like.entity';
 
 @Injectable()
 export class LikeService {
@@ -23,6 +23,70 @@ export class LikeService {
 
     private readonly postingService: PostingService,
   ) {}
+
+  async findLikes(query: LikePayloadData, skip: number, limit: number) {
+    const aggregations = [];
+
+    if (query.user) {
+      aggregations.push({ $match: { user: query.user } });
+    }
+
+    aggregations.push({ $sort: { created_at: -1 } });
+
+    const aggregationMatches = [...aggregations];
+
+    aggregations.push({ $skip: skip });
+    aggregations.push({ $limit: limit });
+
+    aggregations.push({
+      $lookup: {
+        from: 'posts',
+        as: 'posts',
+        localField: 'post',
+        foreignField: 'key',
+      },
+    });
+    aggregations.push({ $set: { posts: { $first: '$posts' } } });
+    aggregations.push({
+      $set: {
+        'post_data.content': '$posts.content',
+        'post_data.tag': '$posts.tag',
+        'post_data.user': '$posts.user',
+      },
+    });
+    aggregations.push({
+      $lookup: {
+        from: 'profiles',
+        as: 'post_profiles',
+        localField: 'post_data.user',
+        foreignField: 'public_key',
+      },
+    });
+    aggregations.push({
+      $set: { post_profiles: { $first: '$post_profiles' } },
+    });
+    aggregations.push({
+      $set: {
+        'post_data.user_image': '$post_profiles.image',
+        'post_data.user_alias': '$post_profiles.alias',
+      },
+    });
+    aggregations.push({ $unset: ['posts', 'post_profiles'] });
+
+    const [likes, total] = await Promise.all([
+      this.likeModel.aggregate(aggregations),
+      this.likeModel.aggregate(
+        aggregationMatches.concat([{ $count: 'count' }]),
+      ),
+    ]);
+
+    return {
+      results: likes,
+      total: total[0]?.count || 0,
+      skip,
+      limit,
+    };
+  }
 
   async createLike(publicKey: string, postPublicKey: string) {
     const like = await this.likeModel.findOne({

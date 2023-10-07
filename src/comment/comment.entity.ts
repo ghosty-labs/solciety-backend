@@ -18,4 +18,5 @@ export class CommentPayloadData {
   user: string;
   post: string;
   parent: string;
+  lookupPost: boolean;
 }

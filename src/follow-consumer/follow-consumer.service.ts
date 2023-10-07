@@ -30,6 +30,16 @@ export class FollowConsumerService {
       this.profileService.getProfile(followData.following),
     ]);
 
+    const hasFollowed = await this.followService.getFollowUserAndFollowing(
+      followData.user,
+      followData.following,
+    );
+    if (hasFollowed) {
+      throw new Error(
+        `Account ${followData.user} already followed ${followData.following}`,
+      );
+    }
+
     if (follower && following) {
       await mongoWithTransaction(this.mongooseConnection, async (session) => {
         await this.followService.createFollow(session, {

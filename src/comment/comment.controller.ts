@@ -17,6 +17,7 @@ export class CommentController {
       user: query.user,
       post: query.post,
       parent: query.parent,
+      lookupPost: query.__lookup_post,
     };
 
     const posting = await this.commentService.findComments(

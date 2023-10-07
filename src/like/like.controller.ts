@@ -1,12 +1,36 @@
-import { Body, Controller, Put, Req, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Put,
+  Query,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthGuard } from 'guards/auth.guard';
 import { LikePostBodyDto } from 'src/posting/posting.dto';
 import { RequestWithPublicKey } from 'src/profile/profile.entity';
 import { LikeService } from './like.service';
+import { GetLikeQueryDto } from './like.dto';
 
 @Controller()
 export class LikeController {
   constructor(private readonly likeService: LikeService) {}
+
+  @Get('/like')
+  async findLikes(@Query() query: GetLikeQueryDto) {
+    const { __skip, __limit } = query;
+
+    const skip = parseInt(__skip) || 0;
+    const limit = parseInt(__limit) || 50;
+
+    const payload = {
+      user: query.user,
+    };
+
+    const likes = await this.likeService.findLikes(payload, skip, limit);
+    return likes;
+  }
 
   @UseGuards(AuthGuard)
   @Put('/like/posting')

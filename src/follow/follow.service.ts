@@ -19,6 +19,10 @@ export class FollowService {
     return await this.followModel.findOne({ following });
   }
 
+  async getFollowUserAndFollowing(user: string, following: string) {
+    return await this.followModel.findOne({ user, following });
+  }
+
   async createFollow(session: ClientSession, data: FollowPayloadData) {
     if (data.user === data.following) {
       throw new BadRequestException(
