@@ -38,6 +38,35 @@ export class LikeService {
     aggregations.push({ $skip: skip });
     aggregations.push({ $limit: limit });
 
+    if (query.likedBy) {
+      aggregations.push(
+        {
+          $lookup: {
+            from: 'likes',
+            as: 'likes',
+            let: {
+              user: query.likedBy,
+              post: '$post',
+            },
+            pipeline: [
+              {
+                $match: {
+                  $expr: {
+                    $and: [
+                      { $eq: ['$user', '$$user'] },
+                      { $eq: ['$post', '$$post'] },
+                    ],
+                  },
+                },
+              },
+              { $project: { _id: 0, __v: 0, updated_at: 0 } },
+            ],
+          },
+        },
+        { $set: { likes: { $first: '$likes' } } },
+      );
+    }
+
     aggregations.push({
       $lookup: {
         from: 'posts',

@@ -5,4 +5,5 @@ export class LikeData {
 
 export class LikePayloadData {
   user: string;
+  likedBy: string;
 }

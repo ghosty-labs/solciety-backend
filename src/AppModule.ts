@@ -47,6 +47,7 @@ export class AppModule implements NestModule {
       .forRoutes(
         { path: 'posting', method: RequestMethod.GET },
         { path: 'profile', method: RequestMethod.GET },
+        { path: 'like', method: RequestMethod.GET },
       );
   }
 }

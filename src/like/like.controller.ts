@@ -18,7 +18,10 @@ export class LikeController {
   constructor(private readonly likeService: LikeService) {}
 
   @Get('/like')
-  async findLikes(@Query() query: GetLikeQueryDto) {
+  async findLikes(
+    @Req() req: RequestWithPublicKey,
+    @Query() query: GetLikeQueryDto,
+  ) {
     const { __skip, __limit } = query;
 
     const skip = parseInt(__skip) || 0;
@@ -26,6 +29,7 @@ export class LikeController {
 
     const payload = {
       user: query.user,
+      likedBy: req.publicKey,
     };
 
     const likes = await this.likeService.findLikes(payload, skip, limit);
