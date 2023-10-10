@@ -19,6 +19,13 @@ export class ProfileService {
     private readonly followService: FollowService,
   ) {}
 
+  async checkProfileExist(publicKey: string) {
+    const profile = await this.profileModel.findOne({ public_key: publicKey });
+    if (!profile) return false;
+
+    return true;
+  }
+
   async getProfile(
     publicKey: string,
     userPublicKey?: string | null | undefined,
@@ -152,6 +159,13 @@ export class ProfileService {
     });
 
     return true;
+  }
+
+  async updateProfileAfterCreateNft(publicKey: string, imageUrl: string) {
+    await this.profileModel.updateOne(
+      { public_key: publicKey },
+      { $set: { is_verified: true, image: imageUrl } },
+    );
   }
 
   private async getProfileByAlias(alias: string) {

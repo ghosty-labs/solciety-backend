@@ -26,6 +26,7 @@
     "@nestjs/mongoose": "^10.0.1",
     "@nestjs/platform-express": "^10.0.0",
     "@solana/web3.js": "^1.78.5",
+    "axios": "^1.5.1",
     "bs58": "^5.0.0",
     "bull": "^4.11.3",
     "class-transformer": "^0.5.1",

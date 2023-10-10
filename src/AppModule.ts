@@ -18,6 +18,7 @@ import { AuthMiddleware } from './posting/posting.middleware';
 import { FollowConsumerModule } from './follow-consumer/follow-consumer.module';
 import { NotificationConsumerModule } from './notification-consumer/notification-consumer.module';
 import { NotificationModule } from './notification/notification.module';
+import { NftModule } from './nft/nft.module';
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import { NotificationModule } from './notification/notification.module';
     ProfileModule,
     LikeModule,
     NotificationModule,
+    NftModule,
   ],
 })
 export class AppModule implements NestModule {

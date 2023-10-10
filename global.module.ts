@@ -13,6 +13,10 @@ import {
   NotificationDB,
   NotificationSchema,
 } from 'schemas/notification.schema';
+import { NftService } from './src/nft/nft.service';
+import { NftModule } from './src/nft/nft.module';
+import { NftDB, NftSchema } from 'schemas/nft.schema';
+import { ProfileModule } from 'src/profile/profile.module';
 
 @Global()
 @Module({
@@ -42,6 +46,10 @@ import {
         name: NotificationDB.name,
         schema: NotificationSchema,
       },
+      {
+        name: NftDB.name,
+        schema: NftSchema,
+      },
     ]),
     BullModule.registerQueue({ name: 'POST_LOGS_INDEXER_WORKER' }),
     BullModule.registerQueue({ name: 'COMMENT_LOGS_INDEXER_WORKER' }),
@@ -50,7 +58,10 @@ import {
     FollowModule,
     FollowConsumerModule,
     NotificationModule,
+    ProfileModule,
+    NftModule,
   ],
   exports: [MongooseModule, BullModule],
+  providers: [NftService],
 })
 export class GlobalModule {}

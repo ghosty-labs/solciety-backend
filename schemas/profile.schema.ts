@@ -22,6 +22,8 @@ export class ProfileDB {
   has_new_post: boolean;
   @Prop({ default: false })
   has_notification: boolean;
+  @Prop({ default: false })
+  is_verified: boolean;
   @Prop({ default: 0 })
   total_post?: number;
   @Prop({ default: 0 })
