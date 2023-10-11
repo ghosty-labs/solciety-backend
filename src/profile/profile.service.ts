@@ -161,10 +161,15 @@ export class ProfileService {
     return true;
   }
 
-  async updateProfileAfterCreateNft(publicKey: string, imageUrl: string) {
+  async updateProfileAfterCreateNft(
+    session: ClientSession,
+    publicKey: string,
+    imageUrl: string,
+  ) {
     await this.profileModel.updateOne(
       { public_key: publicKey },
       { $set: { is_verified: true, image: imageUrl } },
+      { session },
     );
   }
 

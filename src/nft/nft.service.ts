@@ -2,16 +2,20 @@ import { Injectable } from '@nestjs/common';
 import { CreateNftPayloadData, NftPostPayloadData } from './nft.entity';
 import { ProfileService } from 'src/profile/profile.service';
 import { fetchMetadata } from 'utils/fetchMetadata';
-import { InjectModel } from '@nestjs/mongoose';
+import { InjectConnection, InjectModel } from '@nestjs/mongoose';
 import { NftDB, NftDocument } from 'schemas/nft.schema';
-import { Model } from 'mongoose';
-import { Connection } from '@solana/web3.js';
+import { Model, Connection } from 'mongoose';
+import { Connection as SolanaConnection } from '@solana/web3.js';
+import { mongoWithTransaction } from 'utils/mongoWithTransaction';
 
 @Injectable()
 export class NftService {
   constructor(
     @InjectModel(NftDB.name)
     private nftModel: Model<NftDocument>,
+
+    @InjectConnection()
+    private mongooseConnection: Connection,
 
     private readonly profileService: ProfileService,
   ) {}
@@ -47,7 +51,7 @@ export class NftService {
     // TODO move this to global variable
     const HTTP_ENDPOINT =
       'https://aged-cool-shard.solana-devnet.discover.quiknode.pro/63e5d459890844fd35c95e5872eb460332d8f25d/';
-    const solanaConnection = new Connection(HTTP_ENDPOINT);
+    const solanaConnection = new SolanaConnection(HTTP_ENDPOINT);
     const confirmation = await solanaConnection.getSignatureStatus(
       data.signature,
       { searchTransactionHistory: true },
@@ -71,13 +75,22 @@ export class NftService {
       symbol: metadata.symbol,
     };
 
-    return await this.nftModel.findOneAndUpdate(
-      {
-        token_address: payload.token_address,
-        mint_address: payload.mint_address,
-      },
-      { $set: payload },
-      { upsert: true, returnDocument: 'after' },
-    );
+    await mongoWithTransaction(this.mongooseConnection, async (session) => {
+      await this.nftModel.findOneAndUpdate(
+        {
+          token_address: payload.token_address,
+          mint_address: payload.mint_address,
+        },
+        { $set: payload },
+        { session, upsert: true },
+      );
+      await this.profileService.updateProfileAfterCreateNft(
+        session,
+        user,
+        metadata.image,
+      );
+    });
+
+    return true;
   }
 }
