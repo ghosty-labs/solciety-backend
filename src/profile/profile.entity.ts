@@ -11,6 +11,7 @@ export class Profile {
   created_at: number;
   updated_at: number;
   is_followed?: boolean;
+  is_verified?: boolean;
 }
 
 export class ProfilePayload {

@@ -42,6 +42,7 @@ export class ProfileService {
       bio: profile.bio,
       has_new_post: profile.has_new_post,
       has_notification: profile.has_notification,
+      is_verified: profile.is_verified,
       total_post: profile.total_post,
       total_follower: profile.total_follower,
       total_following: profile.total_following,
