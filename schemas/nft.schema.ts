@@ -15,6 +15,8 @@ export class NftDB {
   @Prop({ required: true, type: String })
   user: string;
   @Prop({ required: true, type: String })
+  candy_machine_id: string;
+  @Prop({ required: true, type: String })
   mint_address: string;
   @Prop({ required: true, type: String })
   token_address: string;
@@ -25,12 +27,14 @@ export class NftDB {
   @Prop()
   description?: string;
   @Prop()
-  symbol?: string;
+  image?: string;
   @Prop({ default: [] })
   attributes?: Array<{
     trait_type: string;
     value: string;
   }>;
+  @Prop()
+  symbol?: string;
   @Prop()
   created_at?: number;
   @Prop()
