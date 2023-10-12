@@ -19,6 +19,9 @@ export class CommentController {
       parent: query.parent,
       lookupPost: query.__lookup_post,
     };
+    console.log('Comment Controller');
+    console.log(payload);
+    console.log(skip, limit);
 
     const posting = await this.commentService.findComments(
       payload,
