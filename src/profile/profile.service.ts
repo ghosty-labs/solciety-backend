@@ -80,7 +80,7 @@ export class ProfileService {
     putProfilePayload: PutProfilePayload,
   ) {
     // TODO refactor this
-    if (putProfilePayload.alias === undefined)
+    if (putProfilePayload.alias === undefined || putProfilePayload.alias === '')
       delete putProfilePayload['alias'];
     if (putProfilePayload.bio === undefined) putProfilePayload.bio = null;
 
