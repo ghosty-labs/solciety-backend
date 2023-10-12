@@ -77,7 +77,8 @@ export class ProfileService {
     putProfilePayload: PutProfilePayload,
   ) {
     // TODO refactor this
-    if (putProfilePayload.alias === undefined) putProfilePayload.alias = null;
+    if (putProfilePayload.alias === undefined)
+      delete putProfilePayload['alias'];
     if (putProfilePayload.bio === undefined) putProfilePayload.bio = null;
 
     await this.validateAlias(putProfilePayload.alias);
