@@ -17,7 +17,7 @@ export class Profile {
 export class ProfilePayload {
   publicKey: string;
   image: string;
-  alias: string;
+  alias?: string;
   bio: string;
 }
 
