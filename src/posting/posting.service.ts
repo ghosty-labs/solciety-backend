@@ -23,7 +23,7 @@ export class PostingService {
     if (query.tag) {
       aggregations.push({ $match: { user: query.tag } });
     }
-    if (query.tag) {
+    if (query.search) {
       const searchPayload = new RegExp(
         query.search
           .replace(/[|\\{}()[\]^$+*?.]/g, '\\$&')
