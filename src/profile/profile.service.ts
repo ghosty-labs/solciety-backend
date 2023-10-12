@@ -82,11 +82,9 @@ export class ProfileService {
     // TODO refactor this
     console.log('BEFORE');
     console.log(putProfilePayload);
-    if (
-      putProfilePayload.alias === undefined ||
-      putProfilePayload.alias === '.sol'
-    )
+    if (putProfilePayload.alias === undefined)
       delete putProfilePayload['alias'];
+    if (putProfilePayload.alias === '.sol') putProfilePayload.alias = null;
     if (putProfilePayload.bio === undefined) putProfilePayload.bio = null;
 
     console.log('AFTER');
