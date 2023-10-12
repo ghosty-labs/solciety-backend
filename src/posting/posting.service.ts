@@ -28,6 +28,7 @@ export class PostingService {
         query.search
           .replace(/[|\\{}()[\]^$+*?.]/g, '\\$&')
           .replace(/-/g, '\\x2d'),
+        'i',
       );
       console.log(searchPayload);
       aggregations.push({
