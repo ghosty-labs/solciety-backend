@@ -14,6 +14,7 @@ export class CommentConsumerProcessor {
     const comment = await this.commentService.getCommentBySignature(
       commentData.signature,
     );
+    console.log('Comment consumer: ', comment);
 
     if (!comment) {
       await this.commentService.createComment(commentData);
