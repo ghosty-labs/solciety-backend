@@ -82,10 +82,11 @@ export class ProfileService {
 
     await this.validateAlias(putProfilePayload.alias);
 
+    const profile = await this.getProfile(publicKey);
     const profilePayload: ProfilePayload = Object.assign(
       {
         publicKey: publicKey,
-        image: generateProfileImage(publicKey),
+        image: profile ? profile.image : generateProfileImage(publicKey),
       },
       putProfilePayload,
     );
