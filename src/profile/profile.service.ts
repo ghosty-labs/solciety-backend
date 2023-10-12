@@ -187,7 +187,7 @@ export class ProfileService {
       throw new BadRequestException(`alias already exist`);
     }
 
-    const suffix = alias.slice(-3);
+    const suffix = alias.slice(-4);
     if (suffix !== '.sol') {
       throw new BadRequestException(`alias must end with .sol`);
     }
