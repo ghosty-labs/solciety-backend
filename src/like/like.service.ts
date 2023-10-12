@@ -80,6 +80,7 @@ export class LikeService {
       $set: {
         key: '$posts.key',
         signature: '$posts.signature',
+        user: '$posts.user',
         content: '$posts.content',
         tag: '$posts.tag',
         created_at: '$posts.created_at',
