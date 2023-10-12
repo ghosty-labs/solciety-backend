@@ -33,7 +33,10 @@ export class ProfileService {
     const profile = await this.profileModel.findOne({
       public_key: publicKey,
     });
-    if (!profile) throw new BadRequestException(`Profile not found`);
+    if (!profile) {
+      console.error(`Profile not found`);
+      return null;
+    }
 
     const result: Profile = {
       public_key: profile.public_key,
