@@ -54,6 +54,7 @@ export class CommentService {
       aggregations.push({ $set: { posts: { $first: '$posts' } } });
       aggregations.push({
         $set: {
+          'post_data.key': '$posts.key',
           'post_data.content': '$posts.content',
           'post_data.tag': '$posts.tag',
           'post_data.user': '$posts.user',
