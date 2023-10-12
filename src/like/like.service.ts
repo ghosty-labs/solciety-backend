@@ -82,6 +82,8 @@ export class LikeService {
         'post_data.tag': '$posts.tag',
         'post_data.user': '$posts.user',
         'post_data.created_at': '$posts.created_at',
+        'post_data.total_comment': '$posts.total_comment',
+        'post_data.total_like': '$posts.total_like',
       },
     });
     aggregations.push({
