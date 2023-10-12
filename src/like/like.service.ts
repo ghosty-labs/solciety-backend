@@ -78,20 +78,20 @@ export class LikeService {
     aggregations.push({ $set: { posts: { $first: '$posts' } } });
     aggregations.push({
       $set: {
-        'post_data.key': '$posts.key',
-        'post_data.content': '$posts.content',
-        'post_data.tag': '$posts.tag',
-        'post_data.user': '$posts.user',
-        'post_data.created_at': '$posts.created_at',
-        'post_data.total_comment': '$posts.total_comment',
-        'post_data.total_like': '$posts.total_like',
+        key: '$posts.key',
+        signature: '$posts.signature',
+        content: '$posts.content',
+        tag: '$posts.tag',
+        created_at: '$posts.created_at',
+        total_comment: '$posts.total_comment',
+        total_like: '$posts.total_like',
       },
     });
     aggregations.push({
       $lookup: {
         from: 'profiles',
         as: 'post_profiles',
-        localField: 'post_data.user',
+        localField: 'user',
         foreignField: 'public_key',
       },
     });
@@ -100,8 +100,9 @@ export class LikeService {
     });
     aggregations.push({
       $set: {
-        'post_data.user_image': '$post_profiles.image',
-        'post_data.user_alias': '$post_profiles.alias',
+        image: '$post_profiles.image',
+        alias: '$post_profiles.alias',
+        is_verified: '$post_profiles.is_verified',
       },
     });
     aggregations.push({ $unset: ['posts', 'post_profiles'] });
