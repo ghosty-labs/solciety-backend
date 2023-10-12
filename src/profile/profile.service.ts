@@ -81,7 +81,9 @@ export class ProfileService {
       delete putProfilePayload['alias'];
     if (putProfilePayload.bio === undefined) putProfilePayload.bio = null;
 
-    await this.validateAlias(putProfilePayload.alias);
+    if (putProfilePayload.alias) {
+      await this.validateAlias(putProfilePayload.alias);
+    }
 
     const profile = await this.getProfile(publicKey);
     const profilePayload: ProfilePayload = Object.assign(
