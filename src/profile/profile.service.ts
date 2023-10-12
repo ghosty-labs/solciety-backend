@@ -80,15 +80,11 @@ export class ProfileService {
     putProfilePayload: PutProfilePayload,
   ) {
     // TODO refactor this
-    console.log('BEFORE');
-    console.log(putProfilePayload);
     if (putProfilePayload.alias === undefined)
       delete putProfilePayload['alias'];
     if (putProfilePayload.alias === '.sol') putProfilePayload.alias = null;
     if (putProfilePayload.bio === undefined) putProfilePayload.bio = null;
 
-    console.log('AFTER');
-    console.log(putProfilePayload);
     if (putProfilePayload.alias) {
       await this.validateAlias(putProfilePayload.alias);
     }
