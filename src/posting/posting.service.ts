@@ -26,7 +26,7 @@ export class PostingService {
     if (query.search) {
       const searchPayload = new RegExp(
         query.search
-          .replace(/[|\\{}()[\]^$+*?.]/g, '\\$&')
+          .replace(/[|\\{}()[\]^$+*?.]/gi, '\\$&')
           .replace(/-/g, '\\x2d'),
       );
       aggregations.push({
