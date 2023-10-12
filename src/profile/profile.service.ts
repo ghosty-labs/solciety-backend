@@ -79,6 +79,7 @@ export class ProfileService {
     publicKey: string,
     putProfilePayload: PutProfilePayload,
   ) {
+    console.log(putProfilePayload);
     // TODO refactor this
     if (putProfilePayload.alias === undefined || putProfilePayload.alias === '')
       delete putProfilePayload['alias'];
