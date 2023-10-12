@@ -196,5 +196,8 @@ export class ProfileService {
     if (userAlias.length < 3) {
       throw new BadRequestException(`alias has minimum of 3 characters`);
     }
+    if (userAlias.includes(' ')) {
+      throw new BadRequestException(`alias cannot contain whitespace`);
+    }
   }
 }

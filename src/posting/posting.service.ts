@@ -53,7 +53,11 @@ export class PostingService {
     });
     aggregations.push({ $set: { profile: { $first: '$profiles' } } });
     aggregations.push({
-      $set: { image: '$profile.image', alias: '$profile.alias' },
+      $set: {
+        image: '$profile.image',
+        alias: '$profile.alias',
+        is_verified: '$profile.is_verified',
+      },
     });
     aggregations.push({ $unset: ['profiles', 'profile'] });
 

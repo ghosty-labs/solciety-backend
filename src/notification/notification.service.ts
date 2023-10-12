@@ -48,6 +48,24 @@ export class NotificationService {
     aggregations.push({ $skip: skip });
     aggregations.push({ $limit: limit });
 
+    aggregations.push({
+      $lookup: {
+        from: 'profiles',
+        as: 'profiles',
+        localField: 'user',
+        foreignField: 'public_key',
+      },
+    });
+    aggregations.push({ $set: { profile: { $first: '$profiles' } } });
+    aggregations.push({
+      $set: {
+        image: '$profile.image',
+        alias: '$profile.alias',
+        is_verified: '$profile.is_verified',
+      },
+    });
+    aggregations.push({ $unset: ['profiles', 'profile'] });
+
     const [notifications, total] = await Promise.all([
       this.notificationModel.aggregate(aggregations),
       this.notificationModel.aggregate(
