@@ -26,9 +26,10 @@ export class PostingService {
     if (query.search) {
       const searchPayload = new RegExp(
         query.search
-          .replace(/[|\\{}()[\]^$+*?.]/gi, '\\$&')
+          .replace(/[|\\{}()[\]^$+*?.]/g, '\\$&')
           .replace(/-/g, '\\x2d'),
       );
+      console.log(searchPayload);
       aggregations.push({
         $match: {
           $or: [{ tag: searchPayload }, { content: searchPayload }],
