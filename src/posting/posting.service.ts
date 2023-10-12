@@ -31,11 +31,7 @@ export class PostingService {
       );
       aggregations.push({
         $match: {
-          $or: [
-            { user: searchPayload },
-            { tag: searchPayload },
-            { content: searchPayload },
-          ],
+          $or: [{ tag: searchPayload }, { content: searchPayload }],
         },
       });
     }
