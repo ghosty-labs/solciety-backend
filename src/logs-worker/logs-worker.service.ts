@@ -54,6 +54,9 @@ export class LogsWorkerService implements OnModuleInit {
           const keyPrefix = key.split('_')[1];
 
           const stringValue = value.slice(3, -1).replace(/\\n/g, '');
+          console.log(key);
+          console.log(value);
+          console.log(stringValue);
           const objectValue = JSON.parse(stringValue);
 
           switch (keyPrefix) {

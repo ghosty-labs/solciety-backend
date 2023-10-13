@@ -30,7 +30,6 @@ export class PostingService {
           .replace(/-/g, '\\x2d'),
         'i',
       );
-      console.log(searchPayload);
       aggregations.push({
         $match: {
           $or: [{ tag: searchPayload }, { content: searchPayload }],
