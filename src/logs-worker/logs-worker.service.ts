@@ -58,6 +58,8 @@ export class LogsWorkerService implements OnModuleInit {
           console.log(value);
           console.log(stringValue);
           const objectValue = JSON.parse(stringValue);
+          console.log('OBJECT ');
+          console.log(objectValue);
 
           switch (keyPrefix) {
             case PostingLogPrefix.SendPost:
