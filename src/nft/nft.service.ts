@@ -64,7 +64,7 @@ export class NftService {
     const payload: CreateNftPayloadData = {
       user,
       signature: data.signature,
-      candy_machine_id: 'HhYpUYjen5d3Kedw92Hag69nNnVCQ6XUCweVekrewGtN ', // TODO hardcoded
+      candy_machine_id: 'ENLrpVRt39uUrijN5LwB95t2iCfQX6gn4pv94MiPTZyM', // TODO hardcoded
       mint_address: data.mintAddress,
       collection_address: data.collectionAddress,
       token_address: data.tokenAddress,
